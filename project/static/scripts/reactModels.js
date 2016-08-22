@@ -1,9 +1,6 @@
 var Python = React.createClass({
   componentDidMount: function() {
-    var editor = CodeMirror.fromTextArea(document.getElementById(this.props.id), {
-      lineNumbers: true,
-      mode:  "python"
-    });
+
   },
   render: function() {
     return (
