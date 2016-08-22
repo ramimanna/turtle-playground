@@ -1,14 +1,3 @@
-var Python = React.createClass({
-  componentDidMount: function() {
-
-  },
-  render: function() {
-    return (
-      <textarea id={this.props.id} className="Python"/>
-    );
-  }
-});
-
 var CodeForm = React.createClass({
   getInitialState: function(){
     return {code: '',id: 1};
@@ -124,4 +113,3 @@ if(!window.react){
 
 window.react.CodeForm = CodeForm;
 window.react.PlayerBox = PlayerBox;
-window.react.Python = Python;
