@@ -71,6 +71,7 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
     Blue:#A6E22E; 
     Purple:#AE81FF;
     Orange:#FD971F;
+    Green:#A6E22E;
 
            */
 .cm-s-default .cm-punctuation{color:white;} /*done*/
@@ -83,7 +84,7 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 .cm-s-default .cm-variable-2 {color: #05a;}
 .cm-s-default .cm-variable-3 {color: #085;}
 .cm-s-default .cm-property {color: white;} /*done*/
-.cm-s-default .cm-operator {color: orange;}
+.cm-s-default .cm-operator {color: #A6E22E;}
 .cm-s-default .cm-comment {color: #75715E;} /*done*/
 .cm-s-default .cm-string {color: #A6E22E;} /*done*/
 .cm-s-default .cm-string-2 {color: #f50;}
@@ -92,7 +93,7 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 .cm-s-default .cm-builtin {color: #66D9EF;} /*done*/
 .cm-s-default .cm-bracket {color: white;}
 .cm-s-default .cm-tag {color: #170;}
-.cm-s-default .cm-attribute {color: orange;}
+.cm-s-default .cm-attribute {color: blue;}
 .cm-s-default .cm-header {color: #66D9EF;}
 /*.cm-s-default .cm-quote {color: #090;}
 */.cm-s-default .cm-hr {color: #999;}
@@ -248,6 +249,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   position: absolute;
   border-right: none;
   width: 0;
+  border-color:white;
 }
 
 div.CodeMirror-cursors {
