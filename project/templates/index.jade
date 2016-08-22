@@ -37,8 +37,8 @@ html
     script(type="text/jsx" src="/static/scripts/reactModels.js")
     script(type="text/jsx").
       var CodeForm = react.CodeForm;
-      //- var PlayerBox = react.PlayerBox;
-      //- ReactDOM.render(
-      //-   <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas"/>,
-      //-   document.getElementById('codeForm')
-      //- );
+      var PlayerBox = react.PlayerBox;
+      ReactDOM.render(
+        <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas"/>,
+        document.getElementById('codeForm')
+      );
