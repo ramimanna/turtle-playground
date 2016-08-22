@@ -11,16 +11,12 @@ var Python = React.createClass({
 
 var CodeForm = React.createClass({
   getInitialState: function(){
-    return {code: '',id: 1};
+    return {editor: undefined, id: 1};
   },
-  handleCodeChange: function(e){
-    this.setState({code: e.target.value});
-  },
-
   handleSubmit: function(e) {
     e.preventDefault();
     console.log("handleSubmit happening");
-    var code = this.state.code.trim();
+    var code = this.state.editor.getValue().trim();
     var id = this.state.id;
     if (!code || !id) {
       return;
@@ -30,19 +26,20 @@ var CodeForm = React.createClass({
   },
 
   componentDidMount: function(){
-    var myCodeMirror = CodeMirror.fromTextArea(
+    var editor = CodeMirror.fromTextArea(
       document.getElementById('yourcode'),
       {
         mode: 'python',
         autofocus: true
       }
     );
+    this.setState({editor:editor});
   },
   render: function(){
     return(
       <form onSubmit={this.handleSubmit}> 
         <h1>Message {this.props.message}</h1>        
-        <textarea id="yourcode" onChange={this.handleCodeChange} cols="40" rows="10">
+        <textarea id="yourcode" cols="40" rows="10">
 
         </textarea><br />
       <button type="submit">Run</button> 
@@ -102,6 +99,7 @@ var PlayerBox = React.createClass({
       type: 'POST',
       data: turnData,
       success: function(data) {
+        console.log(data);
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
