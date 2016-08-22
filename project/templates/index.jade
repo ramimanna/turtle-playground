@@ -23,17 +23,6 @@ html
     pre#output.
     #mycanvas
 
-    textarea#code
-    script(type="text/javascript").
-      var myCodeMirror = CodeMirror.fromTextArea(
-        document.getElementById('code'),
-        {
-          value: '',
-          mode: 'python',
-          autofocus: true
-        }
-      );
-
     script(type="text/jsx" src="/static/scripts/reactModels.js")
     script(type="text/jsx").
       var CodeForm = react.CodeForm;
@@ -42,3 +31,5 @@ html
         <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas"/>,
         document.getElementById('codeForm')
       );
+    //- script(type="text/javascript").
+

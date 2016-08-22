@@ -28,6 +28,16 @@ var CodeForm = React.createClass({
     this.props.onCodeSubmit({code: code, id: id});
     this.setState(this.getInitialState());
   },
+
+  componentDidMount: function(){
+    var myCodeMirror = CodeMirror.fromTextArea(
+      document.getElementById('yourcode'),
+      {
+        mode: 'python',
+        autofocus: true
+      }
+    );
+  },
   render: function(){
     return(
       <form onSubmit={this.handleSubmit}> 
