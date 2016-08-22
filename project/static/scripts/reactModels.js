@@ -1,3 +1,17 @@
+var Python = React.createClass({
+  componentDidMount: function() {
+    var editor = CodeMirror.fromTextArea(document.getElementById(this.props.id), {
+      lineNumbers: true,
+      mode:  "python"
+    });
+  },
+  render: function() {
+    return (
+      <textarea id={this.props.id} className="Python"/>
+    );
+  }
+});
+
 var CodeForm = React.createClass({
   outf: function(text) {
     // output functions are configurable.  This one just appends some text
@@ -53,11 +67,9 @@ var CodeForm = React.createClass({
 });
 
 
-
-
-
 if(!window.react){
   window.react = {};
 }
 
 window.react.CodeForm = CodeForm;
+window.react.Python = Python;

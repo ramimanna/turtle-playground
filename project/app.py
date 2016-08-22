@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, Response
 import json
+from flask import Flask, render_template, request, Response
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
 app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 app.debug = True
+socketio = SocketIO(app)
 
 waiting = []
 games = {}
@@ -20,7 +22,7 @@ def hello():
     return render_template('hello.jade')
 
 @app.route('/submit_code', methods=['post'])
-def player1():
+def submit_code():
     code = request.form['code']
     player_id = request.form['id']
 
@@ -42,4 +44,4 @@ def player1():
     return Response(json.dumps(resp), status=200, mimetype='application/json')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)

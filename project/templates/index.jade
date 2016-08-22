@@ -11,12 +11,28 @@ html
 
     script(src="{{ url_for('static', filename='bower_components/react/react.min.js') }}")
     script(src="{{ url_for('static', filename='bower_components/react/react-dom.min.js') }}")
+
+    script(src="{{ url_for('static', filename='bower_components/codemirror/lib/codemirror.js') }}")
+    script(src="/static/bower_components/codemirror/mode/python/python.js")
+    link(rel="stylesheet", type="text/css", href="/static/css/codemirror.css")
     script(src='http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js')
+
   body
     h3 Try This
-      #codeForm
+    #codeForm
     pre#output.
     #mycanvas
+
+    textarea#code
+    script(type="text/javascript").
+      var myCodeMirror = CodeMirror.fromTextArea(
+        document.getElementById('code'),
+        {
+          value: '',
+          mode: 'python',
+          autofocus: true
+        }
+      );
 
     script(type="text/jsx" src="/static/scripts/reactModels.js")
     script(type="text/jsx").
