@@ -67,28 +67,35 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 }
 
 /* DEFAULT THEME */
+/*  Red: #F92672;
+    Blue:#A6E22E; 
+    Purple:#AE81FF;
+    Orange:#FD971F;
 
-.cm-s-default .cm-keyword {color: #708;}
+           */
+.cm-s-default .cm-punctuation{color:white;} /*done*/
+
+.cm-s-default .cm-keyword {color: #F92672;} /*done*/
 .cm-s-default .cm-atom {color: #219;}
-.cm-s-default .cm-number {color: #164;}
-.cm-s-default .cm-def {color: #00f;}
-.cm-s-default .cm-variable {color: black;}
+.cm-s-default .cm-number {color: #AE81FF;} /*done*/
+.cm-s-default .cm-def {color: #A6E22E;} /*done*/
+.cm-s-default .cm-variable {color: white;}
 .cm-s-default .cm-variable-2 {color: #05a;}
 .cm-s-default .cm-variable-3 {color: #085;}
-.cm-s-default .cm-property {color: black;}
-.cm-s-default .cm-operator {color: black;}
-.cm-s-default .cm-comment {color: #a50;}
-.cm-s-default .cm-string {color: #a11;}
+.cm-s-default .cm-property {color: white;} /*done*/
+.cm-s-default .cm-operator {color: orange;}
+.cm-s-default .cm-comment {color: #75715E;} /*done*/
+.cm-s-default .cm-string {color: #A6E22E;} /*done*/
 .cm-s-default .cm-string-2 {color: #f50;}
 .cm-s-default .cm-meta {color: #555;}
 .cm-s-default .cm-qualifier {color: #555;}
-.cm-s-default .cm-builtin {color: #30a;}
-.cm-s-default .cm-bracket {color: #997;}
+.cm-s-default .cm-builtin {color: #66D9EF;} /*done*/
+.cm-s-default .cm-bracket {color: white;}
 .cm-s-default .cm-tag {color: #170;}
-.cm-s-default .cm-attribute {color: #00c;}
-.cm-s-default .cm-header {color: blue;}
-.cm-s-default .cm-quote {color: #090;}
-.cm-s-default .cm-hr {color: #999;}
+.cm-s-default .cm-attribute {color: orange;}
+.cm-s-default .cm-header {color: #66D9EF;}
+/*.cm-s-default .cm-quote {color: #090;}
+*/.cm-s-default .cm-hr {color: #999;}
 .cm-s-default .cm-link {color: #00c;}
 
 .cm-negative {color: #d44;}
@@ -110,11 +117,12 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
    the editor. You probably shouldn't touch them. */
 
 .CodeMirror {
-  line-height: 1;
+/*  line-height: 1;
+*/  font-size: 16pt;
   position: relative;
   overflow: hidden;
   background: white;
-  color: black;
+  color: white;
 }
 
 .CodeMirror-scroll {
@@ -127,7 +135,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   position: relative;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
-  background-color:white;  /* BACKGROUND OF CODE MIRROR TEXTAREA !!*/
+  background-color:#272822;  /*  BACKGROUND OF CODE MIRROR TEXTAREA !! */
 }
 .CodeMirror-sizer {
   position: relative;
