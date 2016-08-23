@@ -31,14 +31,16 @@ html
       socket.on('connect', function() {
         socket.emit('start', id);
       });
-      socket.on(id, function(full_code) {
-        console.log(full_code);
-      });
+
     script(type="text/jsx" src="/static/scripts/reactModels.js")
     script(type="text/jsx").
       var CodeForm = react.CodeForm;
       var PlayerBox = react.PlayerBox;
-      ReactDOM.render(
+
+      var RenderedPlayerBox = ReactDOM.render(
         <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
         document.getElementById('codeForm')
       );
+      socket.on(id, function(full_code) {
+        RenderedPlayerBox.runit(full_code);
+      });
