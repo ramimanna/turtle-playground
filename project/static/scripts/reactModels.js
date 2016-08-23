@@ -13,7 +13,9 @@ var CodeForm = React.createClass({
     this.props.onCodeSubmit({code: code, id: id});
     this.setState(this.getInitialState());
   },
-
+  setValue: function(value){
+    this.state.editor.getDoc().setValue(value);
+  },
   componentDidMount: function(){
     var editor = CodeMirror.fromTextArea(
       document.getElementById('yourcode'),
@@ -23,7 +25,6 @@ var CodeForm = React.createClass({
         autofocus: true
       }
     );
-    editor.getDoc().setValue('#Your id is: ' + this.props.playerID);
     this.setState({editor:editor});
   },
   render: function(){
@@ -41,6 +42,10 @@ var PlayerBox = React.createClass({
   getInitialState: function(){
     return({data:''});
   },
+  setRole: function(role){
+    this.setState({role:role});
+  },
+
   outf: function(text) {
     // output functions are configurable.  This one just appends some text
     // to a pre element.
@@ -108,8 +113,9 @@ var PlayerBox = React.createClass({
   render: function(){
     return(
       <div className='playerBox'>
-        <h1>Message {this.state.message}</h1>        
-        <CodeForm playerID={this.props.playerID} onCodeSubmit={this.handleCodeSubmit} />
+        <h1>Message {this.state.message}</h1>
+        <p>{this.state.role}</p>
+        <CodeForm ref="codeForm" role={this.state.role} playerID={this.props.playerID} onCodeSubmit={this.handleCodeSubmit} />
       </div>
     );
   }
