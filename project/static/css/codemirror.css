@@ -28,13 +28,14 @@
 /* GUTTER */
 
 .CodeMirror-gutters {
-  border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
+  border-right: 1px solid #272822;
+  background-color: #272822;
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
+  margin-left:-30px;
   min-width: 20px;
   text-align: right;
   color: #999;

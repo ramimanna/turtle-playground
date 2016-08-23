@@ -18,6 +18,7 @@ var CodeForm = React.createClass({
     var editor = CodeMirror.fromTextArea(
       document.getElementById('yourcode'),
       {
+        lineNumbers:true,
         mode: 'python',
         autofocus: true
       }
