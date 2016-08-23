@@ -13,7 +13,7 @@ socketio = SocketIO(app)
 
 waiting = [] # player_ids
 games = {} # player_id : Game containing player
-
+all_sockets = {}
 
 class Player:
     def __init__(self, player_id):
@@ -24,6 +24,8 @@ class Game:
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
+        socketio.emit(self.player1.id+"_role", "Player 1")
+        socketio.emit(self.player2.id+"_role", "Player 2")
     
     def play_turn(self, player_id, player_code):
         if player_id == self.player1.id:
@@ -39,8 +41,8 @@ class Game:
             pass # Player is resubmitting code during same turn.
 
         if player.code and partner.code:
-            socketio.emit(self.player1.id, self.combine_player_codes())
-            socketio.emit(self.player2.id, self.combine_player_codes())
+            socketio.emit(self.player1.id+"_code", self.combine_player_codes())
+            socketio.emit(self.player2.id+"_code", self.combine_player_codes())
 
             return self.combine_player_codes() # Todo inform client, and reset player.code and partner.code
         else:
@@ -62,6 +64,7 @@ def hello():
 
 @socketio.on('start')
 def start_game(player_id):
+    # print session
     print(player_id)
     if player_id in games:
         game = games[player_id]
@@ -78,8 +81,6 @@ def start_game(player_id):
     else:
         waiting.append(player_id)
         resp="new player! Please wait to be matched"
-
-    #return Response(json.dumps(resp), status=200, mimetype='application/json')   
 
 @app.route('/submit_code', methods=['post'])
 def submit_code():
