@@ -23,6 +23,7 @@ var CodeForm = React.createClass({
         autofocus: true
       }
     );
+    editor.getDoc().setValue('#Your id is: ' + this.props.playerID);
     this.setState({editor:editor});
   },
   render: function(){
