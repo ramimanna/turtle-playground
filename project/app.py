@@ -14,8 +14,7 @@ socketio = SocketIO(app)
 waiting = [] # player_ids
 games = {} # player_id : Game containing player
 
-sockets = {} # player_id is same as socket sessid. maps to socket object.
-client_id_to_player_id = {}
+sockets = {}
 
 # Object that represents a socket connection
 class Socket:
@@ -28,13 +27,13 @@ class Socket:
         socketio.emit(event, data, room=self.sid)
 
 @socketio.on('connect')
-def foo():
+def on_connect():
     sockets[request.sid] = Socket(request.sid)
 
 class Player:
-    def __init__(self, player_id):
+    def __init__(self, player_id, socket_id):
         self.id = player_id
-        self.socket = sockets[player_id]
+        self.socket = sockets[socket_id]
         self.code = None
 
 class Game:
@@ -81,8 +80,7 @@ def hello():
 
 @socketio.on('start')
 def start_game(client_id):
-    client_id_to_player_id[client_id] = request.sid
-    player_id = request.sid
+    player_id = client_id
 
     if player_id in games:
         game = games[player_id]
@@ -90,14 +88,14 @@ def start_game(client_id):
     elif player_id in waiting:
         resp = "keep waiting"
     elif waiting:
-        player1_id = waiting.pop()
-        g = Game(Player(player1_id), Player(player_id))
+        player1 = waiting.pop()
+        g = Game(player1, Player(player_id, request.sid))
 
-        games[player1_id] = g
+        games[player1.id] = g
         games[player_id] = g
         resp = "matched!"
     else:
-        waiting.append(player_id)
+        waiting.append( Player(player_id, request.sid) )
         resp="new player! Please wait to be matched"
 
     sockets[request.sid].emit("id", request.sid)
@@ -108,7 +106,7 @@ def disconnect():
 
 @app.route('/submit_code', methods=['post'])
 def submit_code():
-    player_id = client_id_to_player_id[request.form['id']]
+    player_id = request.form['id']
     player_code = request.form['code']
     print "SUBMIT CODE and ID: ", player_id,player_code
     if player_id not in games:
