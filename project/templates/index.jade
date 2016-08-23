@@ -36,9 +36,6 @@ html
       socket.on('disconnect', function() {
         socket.emit('hey')
       });
-      socket.on(id+"_role", function(role){
-        console.log(role); //Player 1 or Player 2
-      });
 
     script(type="text/jsx" src="/static/scripts/reactModels.js")
     script(type="text/jsx").
@@ -52,4 +49,9 @@ html
       // On receive targeted message containing turn code from server
       socket.on(id+"_code", function(full_code) {
         RenderedPlayerBox.runit(full_code);
+      });
+
+      socket.on(id+"_role", function(role){
+        RenderedPlayerBox.setRole(role); //Player 1 or Player 2
+        RenderedPlayerBox.refs.codeForm.setValue("#The game has started!\n#You are "+role+"\n#You have a clone of turtle called p"+role.charAt(7));
       });
