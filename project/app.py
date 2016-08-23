@@ -1,6 +1,10 @@
 import json
+import os
 from flask import Flask, render_template, request, Response
 from flask_socketio import SocketIO
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+APP_STATIC = os.path.join(APP_ROOT, 'static')
 
 app = Flask(__name__)
 app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
@@ -9,6 +13,7 @@ socketio = SocketIO(app)
 
 waiting = [] # player_ids
 games = {} # player_id : Game containing player
+
 
 class Player:
     def __init__(self, player_id):
@@ -34,11 +39,16 @@ class Game:
             pass # Player is resubmitting code during same turn.
 
         if player.code and partner.code:
-            return "turn" # Todo inform client, and reset player.code and partner.code
+            return self.combine_player_codes() # Todo inform client, and reset player.code and partner.code
         else:
             return "wait for partner"
 
-
+    def combine_player_codes(self):
+        with open(os.path.join(APP_STATIC, 'game.py'), 'rb') as f:
+            return f.read().replace(
+                '{{PLAYER_1_TURN}}', self.player1.code).replace(
+                '{{PLAYER_2_TURN}}', self.player2.code)
+            
 @app.route('/')
 def index():
     return render_template('index.jade')
