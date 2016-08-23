@@ -63,6 +63,7 @@ var PlayerBox = React.createClass({
 
     // var prog = document.getElementById("yourcode").value;
     var prog = paddedCode;
+    console.log("prog",prog);
     var mypre = document.getElementById(this.props.outputID); 
     mypre.innerHTML = ''; 
     Sk.pre = this.props.outputID;
@@ -91,9 +92,6 @@ var PlayerBox = React.createClass({
         console.log(data);
         var message = data['result'];
         this.setState({message: message});
-        if(message != "wait for partner" && message != "keep waiting" && message != "matched!" && message != "welcome back"){
-          this.runit(message);
-        }
       }.bind(this),
       error: function(xhr, status, err) {
         console.log(xhr);
