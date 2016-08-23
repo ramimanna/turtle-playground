@@ -13,19 +13,36 @@ socketio = SocketIO(app)
 
 waiting = [] # player_ids
 games = {} # player_id : Game containing player
-all_sockets = {}
+
+sockets = {} # player_id is same as socket sessid. maps to socket object.
+client_id_to_player_id = {}
+
+# Object that represents a socket connection
+class Socket:
+    def __init__(self, sid):
+        self.sid = sid
+        self.connected = True
+
+    # Emits data to a socket's unique room
+    def emit(self, event, data):
+        socketio.emit(event, data, room=self.sid)
+
+@socketio.on('connect')
+def foo():
+    sockets[request.sid] = Socket(request.sid)
 
 class Player:
     def __init__(self, player_id):
         self.id = player_id
+        self.socket = sockets[player_id]
         self.code = None
 
 class Game:
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
-        socketio.emit(self.player1.id+"_role", "Player 1")
-        socketio.emit(self.player2.id+"_role", "Player 2")
+        self.player1.socket.emit("role", "Player 1")
+        self.player2.socket.emit("role", "Player 2")
     
     def play_turn(self, player_id, player_code):
         if player_id == self.player1.id:
@@ -41,8 +58,8 @@ class Game:
             pass # Player is resubmitting code during same turn.
 
         if player.code and partner.code:
-            socketio.emit(self.player1.id+"_code", self.combine_player_codes())
-            socketio.emit(self.player2.id+"_code", self.combine_player_codes())
+            self.player1.socket.emit("code", self.combine_player_codes())
+            self.player2.socket.emit("code", self.combine_player_codes())
 
             return self.combine_player_codes() # Todo inform client, and reset player.code and partner.code
         else:
@@ -63,9 +80,10 @@ def hello():
     return render_template('hello.jade')
 
 @socketio.on('start')
-def start_game(player_id):
-    # print session
-    print(player_id)
+def start_game(client_id):
+    client_id_to_player_id[client_id] = request.sid
+    player_id = request.sid
+
     if player_id in games:
         game = games[player_id]
         resp = "welcome back"
@@ -82,9 +100,15 @@ def start_game(player_id):
         waiting.append(player_id)
         resp="new player! Please wait to be matched"
 
+    sockets[request.sid].emit("id", request.sid)
+
+@socketio.on('disconnect')
+def disconnect():
+    print "%s disconnected" % (request.sid)
+
 @app.route('/submit_code', methods=['post'])
 def submit_code():
-    player_id = request.form['id']
+    player_id = client_id_to_player_id[request.form['id']]
     player_code = request.form['code']
     print "SUBMIT CODE and ID: ", player_id,player_code
     if player_id not in games:
