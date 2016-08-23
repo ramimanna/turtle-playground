@@ -1,10 +1,15 @@
+@font-face{
+  font-family: Menlo-Regular;
+  src: url(/static/fonts/Menlo-Regular.ttf);
+}
+
 .CodeMirror { border: 1px solid black; }
 
 /* BASICS */
 
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
-  font-family: monospace;
+  font-family: Menlo-Regular, monospace;
   height: 300px;
 }
 .CodeMirror-scroll {
@@ -17,8 +22,9 @@
 .CodeMirror-lines {
   padding: 4px 0; /* Vertical padding around content */
 }
+
 .CodeMirror pre {
-  padding: 0 4px; /* Horizontal padding of content */
+  padding: 0 8px; /* Horizontal padding of content */
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
@@ -32,7 +38,9 @@
   background-color: #272822;
   white-space: nowrap;
 }
-.CodeMirror-linenumbers {}
+.CodeMirror-linenumbers {
+  background: #272822;
+}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
   margin-left:-30px;
@@ -42,6 +50,7 @@
   -moz-box-sizing: content-box;
   box-sizing: content-box;
 }
+
 
 /* CURSOR */
 
