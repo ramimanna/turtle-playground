@@ -16,20 +16,29 @@ html
     script(src="/static/bower_components/codemirror/mode/python/python.js")
     link(rel="stylesheet", type="text/css", href="/static/css/codemirror.css")
     script(src='http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js')
-
   body
+
     h3 Try This
     #codeForm
     pre#output.
     #mycanvas
 
+    script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js')
+    script(type='text/javascript', charset='utf-8').
+      var id = Math.random().toString(36).substr(2,9);
+      sessionStorage.setItem("id", id);
+      var socket = io.connect('http://' + document.domain + ':' + location.port);
+      socket.on('connect', function() {
+        socket.emit('start', id);
+      });
+      socket.on(id, function(full_code) {
+        console.log(full_code);
+      });
     script(type="text/jsx" src="/static/scripts/reactModels.js")
     script(type="text/jsx").
       var CodeForm = react.CodeForm;
       var PlayerBox = react.PlayerBox;
       ReactDOM.render(
-        <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas"/>,
+        <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
         document.getElementById('codeForm')
       );
-    //- script(type="text/javascript").
-

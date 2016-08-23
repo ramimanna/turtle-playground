@@ -1,7 +1,7 @@
 import json
 import os
 from flask import Flask, render_template, request, Response
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_STATIC = os.path.join(APP_ROOT, 'static')
@@ -39,6 +39,9 @@ class Game:
             pass # Player is resubmitting code during same turn.
 
         if player.code and partner.code:
+            socketio.emit(self.player1.id, self.combine_player_codes())
+            socketio.emit(self.player2.id, self.combine_player_codes())
+
             return self.combine_player_codes() # Todo inform client, and reset player.code and partner.code
         else:
             return "wait for partner"
@@ -57,10 +60,9 @@ def index():
 def hello():
     return render_template('hello.jade')
 
-@app.route('/start_game', methods=['post'])
-def start_game():
-    player_id = request.form['id']
-
+@socketio.on('start')
+def start_game(player_id):
+    print(player_id)
     if player_id in games:
         game = games[player_id]
         resp = "welcome back"
@@ -77,20 +79,20 @@ def start_game():
         waiting.append(player_id)
         resp="new player! Please wait to be matched"
 
-    return Response(json.dumps(resp), status=200, mimetype='application/json')   
+    #return Response(json.dumps(resp), status=200, mimetype='application/json')   
 
 @app.route('/submit_code', methods=['post'])
 def submit_code():
     player_id = request.form['id']
     player_code = request.form['code']
-
+    print "SUBMIT CODE and ID: ", player_id,player_code
     if player_id not in games:
-        return Response(json.dumps("wait"), status=404, mimetype='application/json')
+        return Response("wait", status=404, mimetype='application/json')
 
     else:
         g = games[player_id]
         resp = g.play_turn(player_id, player_code)
-        return Response(json.dumps(resp), status=200, mimetype='application/json')
+        return Response(json.dumps({'result':resp}), status=200, mimetype='application/json')
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

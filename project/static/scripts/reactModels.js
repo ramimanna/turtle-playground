@@ -1,12 +1,12 @@
 var CodeForm = React.createClass({
   getInitialState: function(){
-    return {editor: undefined, id: 1};
+    return {editor: undefined, id: undefined};
   },
   handleSubmit: function(e) {
     e.preventDefault();
     console.log("handleSubmit happening");
     var code = this.state.editor.getValue().trim();
-    var id = this.state.id;
+    var id = this.props.playerID;
     if (!code || !id) {
       return;
     }
@@ -28,9 +28,7 @@ var CodeForm = React.createClass({
   render: function(){
     return(
       <form onSubmit={this.handleSubmit}> 
-        <h1>Message {this.props.message}</h1>        
         <textarea id="yourcode" cols="40" rows="10">
-
         </textarea><br />
       <button type="submit">Run</button> 
       </form> 
@@ -63,7 +61,8 @@ var PlayerBox = React.createClass({
 
     console.log("RUN IT!");
 
-    var prog = document.getElementById("yourcode").value;
+    // var prog = document.getElementById("yourcode").value;
+    var prog = paddedCode;
     var mypre = document.getElementById(this.props.outputID); 
     mypre.innerHTML = ''; 
     Sk.pre = this.props.outputID;
@@ -90,9 +89,18 @@ var PlayerBox = React.createClass({
       data: turnData,
       success: function(data) {
         console.log(data);
-        this.setState({data: data});
+        var message = data['result'];
+        this.setState({message: message});
+        if(message != "wait for partner" && message != "keep waiting" && message != "matched!" && message != "welcome back"){
+          this.runit(message);
+        }
       }.bind(this),
       error: function(xhr, status, err) {
+        console.log(xhr);
+        if(xhr.responseText === 'wait'){
+          console.log("n we made it");
+          this.setState({message:"No game yet, wait to be matched"})
+        }
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
@@ -100,7 +108,10 @@ var PlayerBox = React.createClass({
 
   render: function(){
     return(
-      <CodeForm message = {this.state.data} onCodeSubmit={this.handleCodeSubmit} />
+      <div className='playerBox'>
+        <h1>Message {this.state.message}</h1>        
+        <CodeForm playerID={this.props.playerID} onCodeSubmit={this.handleCodeSubmit} />
+      </div>
     );
   }
 });
