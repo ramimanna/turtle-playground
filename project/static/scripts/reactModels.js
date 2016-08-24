@@ -23,7 +23,13 @@ var PythonEditor = React.createClass({
   }
 });
 
-var PythonOutput = React.createClass({  
+var PythonOutput = React.createClass({
+  propTypes: {
+    canvasID : React.PropTypes.string
+  },
+  getDefaultProps: function () {
+    return { canvasID: "canvas" };
+  },
   outf: function(text) {
     // output functions are configurable.  This one just appends some text
     // to a pre element.

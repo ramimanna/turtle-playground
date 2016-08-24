@@ -6,10 +6,6 @@ block BodyContent
   #mycanvas
   #pythonOutput
 
-  textarea#samplecode
-    | import turtle
-    | t=turtle.Turtle()
-    | t.goto(0,100)
   script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js')
   script(type='text/javascript', charset='utf-8').
     var id = Math.random().toString(36).substr(2,9);
@@ -35,7 +31,7 @@ block BodyContent
     );
 
     //- ReactDOM.render(
-    //-   <PythonOutput code="print 'hi'" canvasID="mycanvas"/>,
+    //-   <PythonOutput code="print 'hi'"/>,
     //-   document.getElementById("pythonOutput")
     //- );
 
