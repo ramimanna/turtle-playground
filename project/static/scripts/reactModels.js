@@ -25,7 +25,8 @@ var PythonEditor = React.createClass({
 
 var PythonOutput = React.createClass({
   propTypes: {
-    canvasID : React.PropTypes.string
+    canvasID : React.PropTypes.string,
+    code : React.PropTypes.string.isRequired
   },
   getDefaultProps: function () {
     return { canvasID: "canvas" };
