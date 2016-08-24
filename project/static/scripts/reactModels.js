@@ -1,9 +1,6 @@
 var PythonEditor = React.createClass({
-  getInitialState: function(){
-    return {editor: undefined}; 
-  },
   componentDidMount: function(){
-    var editor = CodeMirror.fromTextArea(
+    this.editor = CodeMirror.fromTextArea(
       this.refs.textarea,
       {
         lineNumbers:true,
@@ -11,13 +8,12 @@ var PythonEditor = React.createClass({
         autofocus: true        
       }
     );
-    this.setState({editor:editor});
   },
   setValue: function(val){
-    this.state.editor.getDoc().setValue(val);
+    this.editor.getDoc().setValue(val);
   },
   getValue: function(){
-    return this.state.editor.getValue().trim();
+    return this.editor.getValue().trim();
   },
   render: function(){
     return (
