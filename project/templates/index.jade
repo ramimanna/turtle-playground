@@ -46,8 +46,12 @@ html
       socket.on("code", function(full_code) {
         RenderedPlayerBox.runit(full_code);
       });
-
       socket.on("role", function(role){
         RenderedPlayerBox.setRole(role); //Player 1 or Player 2
-        RenderedPlayerBox.refs.editor.setValue("#The game has started!\n#You are "+role+"\n#You have a clone of turtle called p"+role.charAt(7));
+        RenderedPlayerBox.refs.editor.setValue([
+          "#The game has started!",
+          "#You are " + role,
+          "#You have a clone of turtle called p"+role.charAt(7),
+          "def play_turn(p"+role.charAt(7)+"):"
+        ].join("\n"));
       });
