@@ -23,6 +23,57 @@ var PythonEditor = React.createClass({
   }
 });
 
+var PythonOutput = React.createClass({  
+  outf: function(text) {
+    // output functions are configurable.  This one just appends some text
+    // to a pre element.
+    this.refs.pre.innerHTML += text;
+  },
+
+  builtinRead: function(x) {
+    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+      throw "File not found: '" + x + "'";
+    return Sk.builtinFiles["files"][x];
+  },
+
+  runit: function(paddedCode){
+    // Here's everything you need to run a python program in skulpt
+    // grab the code from your textarea
+    // get a reference to your pre element for output
+    // configure the output function
+    // call Sk.importMainWithBody()
+
+    console.log("RUN IT!");
+
+    var prog = paddedCode;
+    console.log("prog",prog);
+
+    this.refs.pre.innerHTML = ''; 
+    Sk.configure({output:this.outf, read:this.builtinRead}); 
+    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = this.props.canvasID;
+    var myPromise = Sk.misceval.asyncToPromise(function() {
+       return Sk.importMainWithBody("<stdin>", false, prog, true);
+    });
+    myPromise.then(function(mod) {
+       console.log('success');
+    },
+       function(err) {
+       console.log(err.toString());
+    }); 
+  },
+  render: function(){
+    return(
+      <div>
+        <pre ref="pre"> </pre>
+        <canvas id={this.props.canvasID}></canvas>
+      </div>
+    );
+  },
+  componentDidMount: function(){
+    this.runit(this.props.code);
+  },
+});
+
 var PlayerBox = React.createClass({
   getInitialState: function(){
     return({role: undefined, message: ""});
@@ -87,6 +138,7 @@ var PlayerBox = React.createClass({
       success: function(data) {
         console.log(data);
         var message = data['result'];
+        console.log(message);
         this.setState({message: message});
       }.bind(this),
       error: function(xhr, status, err) {
@@ -120,4 +172,5 @@ if(!window.react){
 }
 
 window.react.PythonEditor = PythonEditor;
+window.react.PythonOutput = PythonOutput;
 window.react.PlayerBox = PlayerBox;
