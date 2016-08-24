@@ -23,19 +23,13 @@ var PythonEditor = React.createClass({
 });
 
 var CodeForm = React.createClass({
-  getInitialState: function(){
-    return {id: undefined};
-  },
   handleSubmit: function(e) {
     e.preventDefault();
-    console.log("handleSubmit happening");
     var code = this.refs.editor.getValue();
-    var id = this.props.playerID;
-    if (!code || !id) {
+    if (!code) {
       return;
     }
-    this.props.onCodeSubmit({code: code, id: id});
-    this.setState(this.getInitialState());
+    this.props.onCodeSubmit(code);
   },
   setValue: function(value){
     this.refs.editor.setValue(value);
@@ -53,7 +47,7 @@ var CodeForm = React.createClass({
 
 var PlayerBox = React.createClass({
   getInitialState: function(){
-    return({data:''});
+    return({role: undefined, message: ""});
   },
   setRole: function(role){
     this.setState({role:role});
@@ -65,6 +59,7 @@ var PlayerBox = React.createClass({
     var mypre = document.getElementById(this.props.canvasID);
     mypre.innerHTML = mypre.innerHTML + text;
   },
+
   builtinRead: function(x) {
     if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
     throw "File not found: '" + x + "'";
@@ -99,12 +94,12 @@ var PlayerBox = React.createClass({
     }); 
   },
 
-  handleCodeSubmit: function(turnData){
+  handleCodeSubmit: function(code){
+    var turnData = {code:code, id: this.props.playerID};
     console.log("turnData");
     console.log(turnData);
     $.ajax({
       url: this.props.url,
-      // dataType: 'json',
       type: 'POST',
       data: turnData,
       success: function(data) {
@@ -115,8 +110,7 @@ var PlayerBox = React.createClass({
       error: function(xhr, status, err) {
         console.log(xhr);
         if(xhr.responseText === 'wait'){
-          console.log("n we made it");
-          this.setState({message:"No game yet, wait to be matched"})
+          this.setState({message:"No game yet, wait to be matched"});
         }
         console.error(this.props.url, status, err.toString());
       }.bind(this)
@@ -128,7 +122,7 @@ var PlayerBox = React.createClass({
       <div className='playerBox'>
         <h1>Message {this.state.message}</h1>
         <p>{this.state.role}</p>
-        <CodeForm ref="codeForm" role={this.state.role} playerID={this.props.playerID} onCodeSubmit={this.handleCodeSubmit} />
+        <CodeForm ref="codeForm" onCodeSubmit={this.handleCodeSubmit} />
       </div>
     );
   }
@@ -139,5 +133,6 @@ if(!window.react){
   window.react = {};
 }
 
+window.react.PythonEditor = PythonEditor;
 window.react.CodeForm = CodeForm;
 window.react.PlayerBox = PlayerBox;
