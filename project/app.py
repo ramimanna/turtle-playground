@@ -85,10 +85,6 @@ class Game:
 def index():
     return render_template('index.jade')
 
-@app.route('/hello')
-def hello():
-    return render_template('hello.jade')
-
 def start_game(player_id, sessid):
     print "attempt new game", player_id, sessid
     if player_id in games:
