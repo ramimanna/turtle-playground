@@ -11,6 +11,7 @@ var PythonEditor = React.createClass({
   },
   setValue: function(val){
     this.editor.getDoc().setValue(val);
+    this.editor.execCommand("goDocEnd");
   },
   getValue: function(){
     return this.editor.getValue().trim();
@@ -38,7 +39,7 @@ var PlayerBox = React.createClass({
 
   builtinRead: function(x) {
     if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-    throw "File not found: '" + x + "'";
+      throw "File not found: '" + x + "'";
     return Sk.builtinFiles["files"][x];
   },
 
