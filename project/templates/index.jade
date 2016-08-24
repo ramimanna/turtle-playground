@@ -1,57 +1,39 @@
-doctype 5
-html
-  head(lang='en')
-    meta(charset='UTF-8')
-    title Flask React
-    meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    
-    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js', type='text/javascript')
-    script(src='http://www.skulpt.org/static/skulpt.min.js', type='text/javascript')
-    script(src='http://www.skulpt.org/static/skulpt-stdlib.js', type='text/javascript')
+extends ./layout.jade
+block BodyContent
+  h3 Try This
+  #codeForm
+  pre#output.
+  #mycanvas
 
-    script(src="{{ url_for('static', filename='bower_components/react/react.min.js') }}")
-    script(src="{{ url_for('static', filename='bower_components/react/react-dom.min.js') }}")
+  script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js')
+  script(type='text/javascript', charset='utf-8').
+    var id = Math.random().toString(36).substr(2,9);
+    sessionStorage.setItem("id", id);
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-    script(src="{{ url_for('static', filename='bower_components/codemirror/lib/codemirror.js') }}")
-    script(src="/static/bower_components/codemirror/mode/python/python.js")
-    link(rel="stylesheet", type="text/css", href="/static/css/codemirror.css")
-    script(src='http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js')
-  body
+    socket.on('connect', function() {
+      socket.emit('start', id);
+    });
+    window.onbeforeunload = function () {
+      socket.emit('close', id);
+      return;
+    };
 
-    h3 Try This
-    #codeForm
-    pre#output.
-    #mycanvas
+  script(type="text/jsx" src="/static/scripts/reactModels.js")
+  script(type="text/jsx").
+    var CodeForm = react.CodeForm;
+    var PlayerBox = react.PlayerBox;
 
-    script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js')
-    script(type='text/javascript', charset='utf-8').
-      var id = Math.random().toString(36).substr(2,9);
-      sessionStorage.setItem("id", id);
-      var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var RenderedPlayerBox = ReactDOM.render(
+      <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
+      document.getElementById('codeForm')
+    );
+    // On receive targeted message containing turn code from server
+    socket.on("code", function(full_code) {
+      RenderedPlayerBox.runit(full_code);
+    });
 
-      socket.on('connect', function() {
-        socket.emit('start', id);
-      });
-      window.onbeforeunload = function () {
-        socket.emit('close', id);
-        return;
-      };
-
-    script(type="text/jsx" src="/static/scripts/reactModels.js")
-    script(type="text/jsx").
-      var CodeForm = react.CodeForm;
-      var PlayerBox = react.PlayerBox;
-
-      var RenderedPlayerBox = ReactDOM.render(
-        <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
-        document.getElementById('codeForm')
-      );
-      // On receive targeted message containing turn code from server
-      socket.on("code", function(full_code) {
-        RenderedPlayerBox.runit(full_code);
-      });
-
-      socket.on("role", function(role){
-        RenderedPlayerBox.setRole(role); //Player 1 or Player 2
-        RenderedPlayerBox.refs.editor.setValue("#The game has started!\n#You are "+role+"\n#You have a clone of turtle called p"+role.charAt(7));
-      });
+    socket.on("role", function(role){
+      RenderedPlayerBox.setRole(role); //Player 1 or Player 2
+      RenderedPlayerBox.refs.editor.setValue("#The game has started!\n#You are "+role+"\n#You have a clone of turtle called p"+role.charAt(7));
+    });
