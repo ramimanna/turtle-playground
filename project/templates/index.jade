@@ -32,6 +32,10 @@ html
       socket.on('connect', function() {
         socket.emit('start', id);
       });
+      window.onbeforeunload = function () {
+        socket.emit('close', id);
+        return;
+      };
 
     script(type="text/jsx" src="/static/scripts/reactModels.js")
     script(type="text/jsx").

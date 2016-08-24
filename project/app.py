@@ -35,21 +35,32 @@ class Player:
         self.id = player_id
         self.socket = sockets[socket_id]
         self.code = None
+    def __repr__(self):
+        return "Player "+self.id
 
 class Game:
     def __init__(self, player1, player2):
+        print "new game!", player1, player2
         self.player1 = player1
         self.player2 = player2
         self.player1.socket.emit("role", "Player 1")
         self.player2.socket.emit("role", "Player 2")
     
+    def get_player(self, player_id):
+        if self.player1.id == player_id:
+            return self.player1
+        if self.player2.id == player_id:
+            return self.player2
+
+    def get_matched_player(self, player_id):
+        if self.player1.id == player_id:
+            return self.player2
+        if self.player2.id == player_id:
+            return self.player1
+
     def play_turn(self, player_id, player_code):
-        if player_id == self.player1.id:
-            player = self.player1
-            partner = self.player2
-        elif player_id == self.player2.id:
-            player = self.player2
-            partner = self.player1
+        player = self.get_player(player_id)
+        partner = self.get_matched_player(player_id)
 
         if player.code is None:
             player.code = player_code
@@ -78,10 +89,8 @@ def index():
 def hello():
     return render_template('hello.jade')
 
-@socketio.on('start')
-def start_game(client_id):
-    player_id = client_id
-
+def start_game(player_id, sessid):
+    print "attempt new game", player_id, sessid
     if player_id in games:
         game = games[player_id]
         resp = "welcome back"
@@ -89,20 +98,41 @@ def start_game(client_id):
         resp = "keep waiting"
     elif waiting:
         player1 = waiting.pop()
-        g = Game(player1, Player(player_id, request.sid))
+        g = Game(player1, Player(player_id, sessid))
 
         games[player1.id] = g
         games[player_id] = g
         resp = "matched!"
     else:
-        waiting.append( Player(player_id, request.sid) )
+        waiting.append( Player(player_id, sessid) )
         resp="new player! Please wait to be matched"
 
-    sockets[request.sid].emit("id", request.sid)
+    print "waiting", waiting
+    print "games", games
+    sockets[sessid].emit("id", sessid)
 
-@socketio.on('disconnect')
-def disconnect():
+@socketio.on('start')
+def on_start(client_id):
+    start_game(client_id, request.sid)
+
+@socketio.on('close')
+def close(player_id):
     print "%s disconnected" % (request.sid)
+    del sockets[request.sid]
+
+    if player_id in games:
+        g = games[player_id]
+        del games[player_id]
+        partner = g.get_matched_player(player_id)
+        del games[partner.id]
+        start_game(partner.id, partner.socket.sid)
+    else:
+        for i, p in enumerate(waiting):
+            if p.id == player_id: #if player was in waiting, remove
+                waiting.remove(p)
+                print p, "removed from waiting"
+                break
+
 
 @app.route('/submit_code', methods=['post'])
 def submit_code():

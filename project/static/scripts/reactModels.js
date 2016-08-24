@@ -23,6 +23,14 @@ var PythonEditor = React.createClass({
   }
 });
 
+var PythonRunnable = React.createClass({
+  render (
+    <div>
+      <PythonEditor/>
+    </div>
+  );
+});
+
 var PlayerBox = React.createClass({
   getInitialState: function(){
     return({role: undefined, message: ""});
