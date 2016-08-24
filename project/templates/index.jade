@@ -49,5 +49,5 @@ html
 
       socket.on("role", function(role){
         RenderedPlayerBox.setRole(role); //Player 1 or Player 2
-        RenderedPlayerBox.refs.codeForm.setValue("#The game has started!\n#You are "+role+"\n#You have a clone of turtle called p"+role.charAt(7));
+        RenderedPlayerBox.refs.editor.setValue("#The game has started!\n#You are "+role+"\n#You have a clone of turtle called p"+role.charAt(7));
       });

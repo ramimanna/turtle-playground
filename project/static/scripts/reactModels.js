@@ -22,29 +22,6 @@ var PythonEditor = React.createClass({
   }
 });
 
-var CodeForm = React.createClass({
-  handleSubmit: function(e) {
-    e.preventDefault();
-    var code = this.refs.editor.getValue();
-    if (!code) {
-      return;
-    }
-    this.props.onCodeSubmit(code);
-  },
-  setValue: function(value){
-    this.refs.editor.setValue(value);
-  },
-  render: function(){
-    return(
-      <form onSubmit={this.handleSubmit}> 
-        <PythonEditor ref='editor'/>
-        <br/>
-        <button type="submit">Run</button> 
-      </form> 
-    );
-  }
-});
-
 var PlayerBox = React.createClass({
   getInitialState: function(){
     return({role: undefined, message: ""});
@@ -52,7 +29,6 @@ var PlayerBox = React.createClass({
   setRole: function(role){
     this.setState({role:role});
   },
-
   outf: function(text) {
     // output functions are configurable.  This one just appends some text
     // to a pre element.
@@ -94,7 +70,12 @@ var PlayerBox = React.createClass({
     }); 
   },
 
-  handleCodeSubmit: function(code){
+  handleCodeSubmit: function(e){
+    e.preventDefault();
+    var code = this.refs.editor.getValue();
+    if (!code || ! this.props.playerID) {
+      return;
+    }
     var turnData = {code:code, id: this.props.playerID};
     console.log("turnData");
     console.log(turnData);
@@ -122,7 +103,11 @@ var PlayerBox = React.createClass({
       <div className='playerBox'>
         <h1>Message {this.state.message}</h1>
         <p>{this.state.role}</p>
-        <CodeForm ref="codeForm" onCodeSubmit={this.handleCodeSubmit} />
+        <form onSubmit={this.handleCodeSubmit}>
+          <PythonEditor ref="editor" />
+          <br/>
+          <button type="submit">Run</button> 
+        </form>
       </div>
     );
   }
@@ -134,5 +119,4 @@ if(!window.react){
 }
 
 window.react.PythonEditor = PythonEditor;
-window.react.CodeForm = CodeForm;
 window.react.PlayerBox = PlayerBox;
