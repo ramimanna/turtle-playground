@@ -1,11 +1,39 @@
+var PythonEditor = React.createClass({
+  getInitialState: function(){
+    return {editor: undefined}; 
+  },
+  componentDidMount: function(){
+    var editor = CodeMirror.fromTextArea(
+      this.refs.textarea,
+      {
+        lineNumbers:true,
+        mode: 'python',
+        autofocus: true        
+      }
+    );
+    this.setState({editor:editor});
+  },
+  setValue: function(val){
+    this.state.editor.getDoc().setValue(val);
+  },
+  getValue: function(){
+    return this.state.editor.getValue().trim();
+  },
+  render: function(){
+    return (
+      <textarea cols="40" rows="10" ref='textarea'/>
+    );
+  }
+});
+
 var CodeForm = React.createClass({
   getInitialState: function(){
-    return {editor: undefined, id: undefined};
+    return {id: undefined};
   },
   handleSubmit: function(e) {
     e.preventDefault();
     console.log("handleSubmit happening");
-    var code = this.state.editor.getValue().trim();
+    var code = this.refs.editor.getValue();
     var id = this.props.playerID;
     if (!code || !id) {
       return;
@@ -14,25 +42,14 @@ var CodeForm = React.createClass({
     this.setState(this.getInitialState());
   },
   setValue: function(value){
-    this.state.editor.getDoc().setValue(value);
-  },
-  componentDidMount: function(){
-    var editor = CodeMirror.fromTextArea(
-      document.getElementById('yourcode'),
-      {
-        lineNumbers:true,
-        mode: 'python',
-        autofocus: true
-      }
-    );
-    this.setState({editor:editor});
+    this.refs.editor.setValue(value);
   },
   render: function(){
     return(
       <form onSubmit={this.handleSubmit}> 
-        <textarea id="yourcode" cols="40" rows="10">
-        </textarea><br />
-      <button type="submit">Run</button> 
+        <PythonEditor ref='editor'/>
+        <br/>
+        <button type="submit">Run</button> 
       </form> 
     );
   }
