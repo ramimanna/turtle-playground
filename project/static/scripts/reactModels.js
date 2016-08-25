@@ -83,6 +83,9 @@ var PlayerBox = React.createClass({
   setRole: function(role){
     this.setState({role:role});
   },
+  write: function(code) {
+    this.refs.editor.setValue(code);
+  },
   run: function(code){
     this.setState({out_code:code});
   },
