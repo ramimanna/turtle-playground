@@ -34,7 +34,7 @@ class Player:
     def __init__(self, player_id, socket_id):
         self.id = player_id
         self.socket = sockets[socket_id]
-        self.code = None
+        self.code = []
     def __repr__(self):
         return "Player "+self.id
 
@@ -45,7 +45,8 @@ class Game:
         self.player2 = player2
         self.player1.socket.emit("role", "Player 1")
         self.player2.socket.emit("role", "Player 2")
-    
+        self.turn = 1
+
     def get_player(self, player_id):
         if self.player1.id == player_id:
             return self.player1
@@ -62,25 +63,30 @@ class Game:
         player = self.get_player(player_id)
         partner = self.get_matched_player(player_id)
 
-        if player.code is None:
-            player.code = player_code
+        if len(player.code) < self.turn:
+            player.code.append(player_code)
         else:
             pass # Player is resubmitting code during same turn.
 
-        if player.code and partner.code:
+        if len(player.code) == self.turn and len(partner.code) == self.turn:
             self.player1.socket.emit("code", self.combine_player_codes())
             self.player2.socket.emit("code", self.combine_player_codes())
 
+            self.turn += 1
             return self.combine_player_codes() # Todo inform client, and reset player.code and partner.code
         else:
             return "wait for partner"
 
     def combine_player_codes(self):
         with open(os.path.join(APP_STATIC, 'game.py'), 'rb') as f:
-            return f.read().replace(
-                '{{PLAYER_1_TURN}}', self.player1.code).replace(
-                '{{PLAYER_2_TURN}}', self.player2.code)
-            
+            full_code = f.read()
+
+            inject = ""
+            for c1, c2 in zip(self.player1.code, self.player2.code):
+                inject += c1 + "\nplay_turn(p1)\n"+ c2 + "\nplay_turn(p2)\n"
+
+            return full_code.replace("{{inject}}", inject)
+
 @app.route('/')
 def index():
     return render_template('index.jade')
