@@ -22,22 +22,14 @@ block BodyContent
 
   script(type="text/jsx" src="/static/scripts/reactModels.js")
   script(type="text/jsx").
-    var CodeForm = react.CodeForm;
-    var PlayerBox = react.PlayerBox;
-    var PythonOutput = react.PythonOutput;
     var RenderedPlayerBox = ReactDOM.render(
-      <PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
+      <react.PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
       document.getElementById('codeForm')
     );
 
-    //- ReactDOM.render(
-    //-   <PythonOutput code="print 'hi'"/>,
-    //-   document.getElementById("pythonOutput")
-    //- );
-
     // On receive targeted message containing turn code from server
     socket.on("code", function(full_code) {
-      RenderedPlayerBox.runit(full_code);
+      RenderedPlayerBox.run(full_code);
     });
 
     socket.on("role", function(role){

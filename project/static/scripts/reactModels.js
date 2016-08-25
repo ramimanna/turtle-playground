@@ -26,34 +26,24 @@ var PythonEditor = React.createClass({
 var PythonOutput = React.createClass({
   propTypes: {
     canvasID : React.PropTypes.string,
-    code : React.PropTypes.string.isRequired
+    code : React.PropTypes.string
   },
   getDefaultProps: function () {
     return { canvasID: "canvas" };
   },
   outf: function(text) {
-    // output functions are configurable.  This one just appends some text
-    // to a pre element.
     this.refs.pre.innerHTML += text;
   },
-
   builtinRead: function(x) {
     if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
       throw "File not found: '" + x + "'";
     return Sk.builtinFiles["files"][x];
   },
-
-  runit: function(paddedCode){
-    // Here's everything you need to run a python program in skulpt
-    // grab the code from your textarea
-    // get a reference to your pre element for output
-    // configure the output function
-    // call Sk.importMainWithBody()
-
-    console.log("RUN IT!");
-
-    var prog = paddedCode;
-    console.log("prog",prog);
+  run: function(prog){
+    if (!prog){
+      return;
+    }
+    console.log("RUN IT!", prog);
 
     this.refs.pre.innerHTML = ''; 
     Sk.configure({output:this.outf, read:this.builtinRead}); 
@@ -68,17 +58,18 @@ var PythonOutput = React.createClass({
        console.log(err.toString());
     }); 
   },
+  componentDidMount: function(){
+    if (this.props.code)
+      this.run(this.props.code);
+  },
   render: function(){
     return(
       <div>
         <pre ref="pre"> </pre>
-        <canvas id={this.props.canvasID}></canvas>
+        <div id={this.props.canvasID}></div>
       </div>
     );
-  },
-  componentDidMount: function(){
-    this.runit(this.props.code);
-  },
+  }
 });
 
 var PlayerBox = React.createClass({
@@ -88,51 +79,13 @@ var PlayerBox = React.createClass({
   setRole: function(role){
     this.setState({role:role});
   },
-  outf: function(text) {
-    // output functions are configurable.  This one just appends some text
-    // to a pre element.
-    var mypre = document.getElementById(this.props.canvasID);
-    mypre.innerHTML = mypre.innerHTML + text;
+  run: function(code){
+    this.refs.pythonOutput.run(code);
   },
-
-  builtinRead: function(x) {
-    if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-      throw "File not found: '" + x + "'";
-    return Sk.builtinFiles["files"][x];
-  },
-
-  runit: function(paddedCode){
-    // Here's everything you need to run a python program in skulpt
-    // grab the code from your textarea
-    // get a reference to your pre element for output
-    // configure the output function
-    // call Sk.importMainWithBody()
-
-    console.log("RUN IT!");
-
-    // var prog = document.getElementById("yourcode").value;
-    var prog = paddedCode;
-    console.log("prog",prog);
-    var mypre = document.getElementById(this.props.outputID); 
-    mypre.innerHTML = ''; 
-    Sk.pre = this.props.outputID;
-    Sk.configure({output:this.outf, read:this.builtinRead}); 
-    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = this.props.canvasID;
-    var myPromise = Sk.misceval.asyncToPromise(function() {
-       return Sk.importMainWithBody("<stdin>", false, prog, true);
-    });
-    myPromise.then(function(mod) {
-       console.log('success');
-    },
-       function(err) {
-       console.log(err.toString());
-    }); 
-  },
-
   handleCodeSubmit: function(e){
     e.preventDefault();
     var code = this.refs.editor.getValue();
-    if (!code || ! this.props.playerID) {
+    if (!code || !this.props.playerID) {
       return;
     }
     var turnData = {code:code, id: this.props.playerID};
@@ -156,8 +109,7 @@ var PlayerBox = React.createClass({
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-  },  
-
+  },
   render: function(){
     return(
       <div className='playerBox'>
@@ -168,6 +120,7 @@ var PlayerBox = React.createClass({
           <br/>
           <button type="submit">Run</button> 
         </form>
+        <PythonOutput ref="pythonOutput"/>
       </div>
     );
   }
