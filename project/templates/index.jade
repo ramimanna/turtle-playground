@@ -1,10 +1,7 @@
 extends ./layout.jade
 block BodyContent
   h3 Try This
-  #codeForm
-  pre#output
-  #mycanvas
-  #pythonOutput
+  #playerBox
 
   script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js')
   script(type='text/javascript', charset='utf-8').
@@ -24,7 +21,7 @@ block BodyContent
   script(type="text/jsx").
     var RenderedPlayerBox = ReactDOM.render(
       <react.PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
-      document.getElementById('codeForm')
+      document.getElementById('playerBox')
     );
 
     // On receive targeted message containing turn code from server

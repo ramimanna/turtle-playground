@@ -62,6 +62,10 @@ var PythonOutput = React.createClass({
     if (this.props.code)
       this.run(this.props.code);
   },
+  componentDidUpdate: function(prevProps, prevState) {
+    if (this.props.code && (this.props.code !== prevProps.code))
+      this.run(this.props.code);
+  },
   render: function(){
     return(
       <div>
@@ -74,13 +78,13 @@ var PythonOutput = React.createClass({
 
 var PlayerBox = React.createClass({
   getInitialState: function(){
-    return({role: undefined, message: ""});
+    return({role: undefined, message: "", out_code: ""});
   },
   setRole: function(role){
     this.setState({role:role});
   },
   run: function(code){
-    this.refs.pythonOutput.run(code);
+    this.setState({out_code:code});
   },
   handleCodeSubmit: function(e){
     e.preventDefault();
@@ -120,7 +124,7 @@ var PlayerBox = React.createClass({
           <br/>
           <button type="submit">Run</button> 
         </form>
-        <PythonOutput ref="pythonOutput"/>
+        <PythonOutput code={this.state.out_code}/>
       </div>
     );
   }
