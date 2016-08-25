@@ -43,9 +43,15 @@ class Game:
         print "new game!", player1, player2
         self.player1 = player1
         self.player2 = player2
-        self.player1.socket.emit("role", "Player 1")
-        self.player2.socket.emit("role", "Player 2")
+
         self.turn = 1
+        self.current_level = 1;
+        with open(os.path.join(APP_STATIC, 'game/level'+str(self.current_level)+'/prompt1.py'), 'rb') as f:
+          prompt = f.read()
+          self.player1.socket.emit("role", {"role":"Player 1", "prompt":prompt, "level":self.current_level})
+        with open(os.path.join(APP_STATIC, 'game/level'+str(self.current_level)+'/prompt2.py'),'rb') as f:
+          prompt = f.read()
+          self.player2.socket.emit("role", {"role":"Player 2", "prompt":prompt, "level":self.current_level})
 
     def get_player(self, player_id):
         if self.player1.id == player_id:
@@ -78,7 +84,7 @@ class Game:
             return "wait for partner"
 
     def combine_player_codes(self):
-        with open(os.path.join(APP_STATIC, 'game.py'), 'rb') as f:
+        with open(os.path.join(APP_STATIC, 'game/level'+str(self.current_level)+'/code.py'), 'rb') as f:
             full_code = f.read()
 
             inject = ""
