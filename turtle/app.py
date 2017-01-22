@@ -93,7 +93,7 @@ class Game:
 
             return full_code.replace("{{inject}}", inject)
 
-@app.route('/')
+@app.route('/turtle')
 def index():
     return render_template('index.jade')
 
@@ -142,7 +142,7 @@ def close(player_id):
                 break
 
 
-@app.route('/submit_code', methods=['post'])
+@app.route('/turtle/submit_code', methods=['post'])
 def submit_code():
     player_id = request.form['id']
     player_code = request.form['code']
@@ -156,4 +156,4 @@ def submit_code():
         return Response(json.dumps({'result':resp}), status=200, mimetype='application/json')
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, port=5001)

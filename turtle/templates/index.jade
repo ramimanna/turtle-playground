@@ -20,7 +20,7 @@ block BodyContent
   script(type="text/jsx" src="/static/scripts/reactModels.js")
   script(type="text/jsx").
     var RenderedPlayerBox = ReactDOM.render(
-      <react.PlayerBox url="/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
+      <react.PlayerBox url="/turtle/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
       document.getElementById('playerBox')
     );
 
