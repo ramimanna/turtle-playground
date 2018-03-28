@@ -17,8 +17,9 @@ block BodyContent
       return;
     };
 
-  script(type="text/jsx" src="/static/scripts/reactModels.js")
-  script(type="text/jsx").
+  script(type="text/babel" src="/static/scripts/reactModels.js")
+  script(type="text/babel").
+    console.log("hi");
     var RenderedPlayerBox = ReactDOM.render(
       <react.PlayerBox url="/turtle/submit_code" outputID="output" canvasID="mycanvas" playerID={sessionStorage.getItem("id")} />,
       document.getElementById('playerBox')

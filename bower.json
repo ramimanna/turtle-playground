@@ -17,7 +17,6 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "react": "^15.1.0",
-    "material-design-lite": "^1.2.0",
-    "codemirror": "^5.18.0"
+    "material-design-lite": "^1.2.0"
   }
 }

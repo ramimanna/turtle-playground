@@ -1,5 +1,5 @@
-var PythonEditor = React.createClass({
-  componentDidMount: function(){
+class PythonEditor extends React.Component {
+  componentDidMount = () => {
     this.editor = CodeMirror.fromTextArea(
       this.refs.textarea,
       {
@@ -8,38 +8,41 @@ var PythonEditor = React.createClass({
         autofocus: true        
       }
     );
-  },
-  setValue: function(val){
+  }
+  setValue = (val) => {
     this.editor.getDoc().setValue(val);
     this.editor.execCommand("goDocEnd");
-  },
-  getValue: function(){
+  }
+  getValue = () => {
     return this.editor.getValue().trim();
-  },
-  render: function(){
+  }
+  render = () => {
     return (
       <textarea cols="40" rows="10" ref='textarea'/>
     );
   }
-});
+}
+class PythonOutput extends React.Component {
+  // propTypes: {
+  //   canvasID : React.PropTypes.string,
+  //   code : React.PropTypes.string
+  // }
+  constructor(props) {
+    super(props);
+  }
+  static defaultProps = {
+    canvasID: "canvas"
+  }
 
-var PythonOutput = React.createClass({
-  propTypes: {
-    canvasID : React.PropTypes.string,
-    code : React.PropTypes.string
-  },
-  getDefaultProps: function () {
-    return { canvasID: "canvas" };
-  },
-  outf: function(text) {
+  outf = (text) => {
     this.refs.pre.innerHTML += text;
-  },
-  builtinRead: function(x) {
+  }
+  builtinRead = (x) => {
     if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
       throw "File not found: '" + x + "'";
     return Sk.builtinFiles["files"][x];
-  },
-  run: function(prog){
+  }
+  run = (prog) => {
     if (!prog){
       return;
     }
@@ -57,16 +60,16 @@ var PythonOutput = React.createClass({
        function(err) {
        console.log(err.toString());
     }); 
-  },
-  componentDidMount: function(){
+  }
+  componentDidMount = () => {
     if (this.props.code)
       this.run(this.props.code);
-  },
-  componentDidUpdate: function(prevProps, prevState) {
+  }
+  componentDidUpdate = (prevProps, prevState) => {
     if (this.props.code && (this.props.code !== prevProps.code))
       this.run(this.props.code);
-  },
-  render: function(){
+  }
+  render = () => {
     return(
       <div>
         <pre ref="pre"> </pre>
@@ -74,22 +77,22 @@ var PythonOutput = React.createClass({
       </div>
     );
   }
-});
-
-var PlayerBox = React.createClass({
-  getInitialState: function(){
-    return({role: undefined, message: "", out_code: ""});
-  },
-  setRole: function(role){
+}
+class PlayerBox extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {role: undefined, message: "", out_code: ""};
+  }
+  setRole = (role) => {
     this.setState({role:role});
-  },
-  write: function(code) {
+  }
+  write = (code) => {
     this.refs.editor.setValue(code);
-  },
-  run: function(code){
+  }
+  run = (code) => {
     this.setState({out_code:code});
-  },
-  handleCodeSubmit: function(e){
+  }
+  handleCodeSubmit = (e) => {
     e.preventDefault();
     var code = this.refs.editor.getValue();
     if (!code || !this.props.playerID) {
@@ -116,8 +119,8 @@ var PlayerBox = React.createClass({
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-  },
-  render: function(){
+  }
+  render = () => {
     return(
       <div className='playerBox'>
         <h1>Message {this.state.message}</h1>
@@ -131,7 +134,7 @@ var PlayerBox = React.createClass({
       </div>
     );
   }
-});
+}
 
 
 if(!window.react){
